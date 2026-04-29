@@ -107,13 +107,20 @@
   }
 
   // ============ API ============
+  // Use hosted backend when frontend is served separately (e.g. Telegram WebApp URL).
+  const API_BASE = (
+    window.APP_CONFIG?.API_BASE_URL ||
+    window.API_BASE_URL ||
+    'testscoolbackend-production.up.railway.app'
+  ).replace(/\/+$/, '');
+
   async function api(endpoint, options = {}) {
     const headers = { 'Content-Type': 'application/json' };
     if (state.isAdmin && state.adminCode) {
       headers['X-Admin-Code'] = state.adminCode;
     }
 
-    const res = await fetch('/api' + endpoint, {
+    const res = await fetch(API_BASE + '/api' + endpoint, {
       method: options.method || 'GET',
       headers,
       body: options.body ? JSON.stringify(options.body) : undefined
